@@ -802,6 +802,8 @@ type NamespaceIndex interface {
 		infoFiles []fs.ReadIndexInfoFileResult,
 	) error
 
+	BlockStatesSnapshot() index.BlockStateSnapshot
+
 	// Close will release the index resources and close the index.
 	Close() error
 }
