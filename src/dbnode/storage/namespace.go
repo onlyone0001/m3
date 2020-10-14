@@ -739,12 +739,7 @@ func (n *dbNamespace) SeriesReadWriteRef(
 	if err != nil {
 		return SeriesReadWriteRef{}, owned, err
 	}
-
-	opts := ShardSeriesReadWriteRefOptions{
-		ReverseIndex: n.reverseIndex != nil,
-	}
-
-	res, err := shard.SeriesReadWriteRef(id, tags, opts)
+	res, err := shard.SeriesReadWriteRef(id, tags)
 	return res, true, err
 }
 
@@ -1667,9 +1662,7 @@ func (n *dbNamespace) aggregateTiles(
 		sourceBlockStarts []time.Time
 	)
 
-	for sourceBlockStart := targetBlockStart;
-		sourceBlockStart.Before(lastSourceBlockEnd);
-		sourceBlockStart = sourceBlockStart.Add(sourceBlockSize) {
+	for sourceBlockStart := targetBlockStart; sourceBlockStart.Before(lastSourceBlockEnd); sourceBlockStart = sourceBlockStart.Add(sourceBlockSize) {
 		reader, err := fs.NewReader(bytesPool, fsOptions)
 		if err != nil {
 			return 0, err

@@ -590,7 +590,6 @@ type databaseShard interface {
 	SeriesReadWriteRef(
 		id ident.ID,
 		tags ident.TagIterator,
-		opts ShardSeriesReadWriteRefOptions,
 	) (SeriesReadWriteRef, error)
 
 	// DocRef returns the doc if already present in a shard series.
@@ -620,12 +619,6 @@ type ShardSnapshotResult struct {
 // by persisting data and updating shard state/block leases.
 type ShardColdFlush interface {
 	Done() error
-}
-
-// ShardSeriesReadWriteRefOptions are options for SeriesReadWriteRef
-// for the shard.
-type ShardSeriesReadWriteRefOptions struct {
-	ReverseIndex bool
 }
 
 // NamespaceIndex indexes namespace writes.
