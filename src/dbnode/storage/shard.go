@@ -1054,7 +1054,7 @@ func (s *dbShard) SeriesReadWriteRef(
 	if entry != nil {
 		// The read/write ref is already incremented.
 		return SeriesReadWriteRef{
-			Series:              entry.Series,
+			Series:              entry,
 			Shard:               s.shard,
 			UniqueIndex:         entry.Index,
 			ReleaseReadWriteRef: entry,
@@ -1090,7 +1090,7 @@ func (s *dbShard) SeriesReadWriteRef(
 	}
 
 	return SeriesReadWriteRef{
-		Series:              entry.Series,
+		Series:              entry,
 		Shard:               s.shard,
 		UniqueIndex:         entry.Index,
 		ReleaseReadWriteRef: entry,
@@ -1251,7 +1251,12 @@ func (s *dbShard) newShardEntry(
 		OnEvictedFromWiredList: s,
 		Options:                s.seriesOpts,
 	})
-	return lookup.NewEntry(newSeries, uniqueIndex), nil
+	return lookup.NewEntry(lookup.NewEntryOptions{
+		Series:      newSeries,
+		Index:       uniqueIndex,
+		IndexWriter: s.reverseIndex,
+		NowFn:       s.nowFn,
+	}), nil
 }
 
 type insertAsyncResult struct {
@@ -2739,7 +2744,7 @@ func (s *dbShard) AggregateTiles(
 	}
 
 	var (
-		annotationPayload  annotation.Payload
+		annotationPayload annotation.Payload
 		// NB: there is a maximum of 4 datapoints per frame for counters.
 		downsampledValues  = make([]downsample.Value, 0, 4)
 		processedTileCount int64

@@ -425,7 +425,7 @@ type databaseNamespace interface {
 // must make sure to release
 type SeriesReadWriteRef struct {
 	// Series reference for read/writing.
-	Series series.DatabaseSeries
+	Series bootstrap.SeriesRef
 	// UniqueIndex is the unique index of the series (as applicable).
 	UniqueIndex uint64
 	// Shard is the shard of the series.
@@ -1298,9 +1298,9 @@ type NewBackgroundProcessFn func(Database, Options) (BackgroundProcess, error)
 // AggregateTilesOptions is the options for large tile aggregation.
 type AggregateTilesOptions struct {
 	// Start and End specify the aggregation window.
-	Start, End          time.Time
+	Start, End time.Time
 	// Step is the downsampling step.
-	Step                time.Duration
+	Step time.Duration
 }
 
 // NamespaceHooks allows dynamic plugging into the namespace lifecycle.
@@ -1309,4 +1309,5 @@ type NamespaceHooks interface {
 	OnCreatedNamespace(Namespace, GetNamespaceFn) error
 }
 
-type GetNamespaceFn func (id ident.ID) (Namespace, bool)
+// GetNamespaceFn returns a namespace given an ID.
+type GetNamespaceFn func(id ident.ID) (Namespace, bool)
