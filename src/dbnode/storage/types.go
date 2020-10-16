@@ -798,8 +798,6 @@ type NamespaceIndex interface {
 
 	BlockStatesSnapshot() index.BlockStateSnapshot
 
-	SetSnapshotStateVersionFlushed(blockStart time.Time, version int)
-
 	// Close will release the index resources and close the index.
 	Close() error
 }
